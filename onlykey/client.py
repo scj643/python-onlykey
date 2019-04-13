@@ -15,6 +15,8 @@ if version_info[0] == 3 and version_info[2] > 4:
 else:
     from aenum import Enum
 
+from enum import IntFlag
+
 if version_info[0] == 3:
     unicode = str
 from sys import platform
@@ -136,6 +138,17 @@ class KeyTypeEnum(Enum):
     ED22519 = 1
     P256 = 2
     SECP256K1 = 3
+
+
+class KeyFlags(IntFlag):
+    AUTHENTICATION = 16
+    DECRYPTION = 32
+    SIGNATURE = 64
+    BACKUP = 128
+    KEYL1024 = 1
+    KEYL2048 = 2
+    KEYL3072 = 3
+    KEYL4096 = 4
 
 
 class OnlyKeyUnavailableException(Exception):
@@ -331,7 +344,7 @@ class OnlyKey(object):
                 current_payload.extend(chunk)
             else:
                 for c in chunk:
-                    current_payload.append(ord(c))
+                    current_payload.append(ord(str(c)))
 
             self.send_message(payload=current_payload, msg=msg)
 
@@ -740,3 +753,13 @@ class OnlyKey(object):
         print('Store backup key in a secure location (i.e. USB drive in a safe)=', repr(ok_priv))
         print('\n')
         ok_priv = 0
+
+    def block_until_unlocked(self, timout_seconds=60):
+        start_time = time.time()
+        states = {}
+        cur_state = 'unknown'
+        while cur_state:
+            cur_state = self.read_string()
+            if start_time - time.time() > timout_seconds:
+                raise TimeoutError("Onlykey wasn't unlocked in {} seconds".format(timout_seconds))
+        return

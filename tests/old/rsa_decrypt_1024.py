@@ -164,7 +164,7 @@ assert len(d) == 32
 
 
 def get_button(byte):
-    ibyte = ord(byte)
+    ibyte = ord(bytes([byte]))
     if ibyte < 6:
         return 1
     return ibyte % 5 + 1
