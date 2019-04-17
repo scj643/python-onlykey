@@ -134,7 +134,7 @@ class MessageField(Enum):
     KEYLAYOUT = 14
 
 
-class KeyTypeEnum(Enum):
+class KeyTypeFlags(IntFlag):
     ED22519 = 1
     P256 = 2
     SECP256K1 = 3
@@ -145,10 +145,13 @@ class KeyFlags(IntFlag):
     DECRYPTION = 32
     SIGNATURE = 64
     BACKUP = 128
-    KEYL1024 = 1
-    KEYL2048 = 2
-    KEYL3072 = 3
-    KEYL4096 = 4
+
+
+class RSATypeFlags(IntFlag):
+    RSA1024 = 1
+    RSA2048 = 2
+    RSA3072 = 3
+    RSA4096 = 4
 
 
 class OnlyKeyUnavailableException(Exception):
